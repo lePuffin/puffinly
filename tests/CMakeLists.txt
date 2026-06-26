@@ -16,16 +16,25 @@ find_library(CPPUTEST_EXT_LIBRARY
     REQUIRED
 )
 
-
-# Gather all source files from the tests directory
-file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+set(TEST_SOURCES
+    main.cpp
+    TestPolicies.cpp
+    TestRangedInt.cpp
+    TestNonEmptyString.cpp
+    TestBoundedFloat.cpp
+    TestOptional.cpp
+    TestCustomPolicy.cpp
+    TestIntegrationValidate.cpp
+)
 
 # Create an executable for tests
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/libs
     ${CPPUTEST_INCLUDE_DIR}
 )
 
@@ -35,6 +44,7 @@ endif()
 
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    puffinly
     ${CPPUTEST_LIBRARY}
     ${CPPUTEST_EXT_LIBRARY}
     Threads::Threads

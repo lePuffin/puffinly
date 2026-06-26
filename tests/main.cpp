@@ -1,5 +1,6 @@
 /**
  * @file: main.cpp
+ * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
@@ -10,15 +11,24 @@
 // ── Defines ──────────────────────────────────────────────
 
 // ── Functions ────────────────────────────────────────────
+// Test group
 
-/**
- * @brief Main entry point for the test suite
- * @param argc Command line argument count
- * @param argv Command line arguments
- * @return Exit code from CppUTest framework (0 on success, non-zero on failure)
- * @details Initializes and runs all registered CppUTest test cases discovered
- *          during compilation and returns the overall test result status.
- */
+// clang-format off
+TEST_GROUP(TestRunnerGroup) {
+    void setup() {
+        // Code here will be called immediately before each test
+    }
+    void teardown() {
+        // Code here will be called immediately after each test
+    }
+};
+// clang-format on
+
+// Tests
+TEST(TestRunnerGroup, RunnerIsLinked) {
+    CHECK_TRUE(true);
+}
+
 int main(int argc, const char** argv) {
     return CommandLineTestRunner::RunAllTests(argc, argv);
 }

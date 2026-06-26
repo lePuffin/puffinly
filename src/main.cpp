@@ -1,6 +1,5 @@
 /**
  * @file: main.cpp
- * @brief:
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
@@ -8,43 +7,42 @@
 // ── Includes ─────────────────────────────────────────────
 #include <iostream>
 
-#include "src/app_config.hpp"  // Include generated app config via project-relative include path
+#include "app_config.hpp"
+#include "libs/puffinly.hpp"
+
+// ── Namespace ────────────────────────────────────────────
+namespace puffinly {
 
 // ── Defines ──────────────────────────────────────────────
-static constexpr const char* TAG = "[Main]";
 
 // ── Functions ────────────────────────────────────────────
 // Public
 
-int main() {
-    // Initialization phase: Print a message and create the TaskManager.
-    std::cout << "Initializing application: " << APP_NAME << " v." << APP_VERSION << " by " << PRODUCT_MAINTAINER
-              << std::endl;
+void run_demo() {
+    const ranged_int<0, 150>    age(29);
+    const non_empty_string      name("Puffin");
+    const bounded_float<0, 100> confidence(99.5);
+    const optional<int>         lucky_number(7);
 
-    // Main execution phase: Run the task(s) and handle any errors.
-    try {
-        std::cout << TAG << " Application is running..." << std::endl;
-
-        while (1) {
-            // Usual application logic would go here (e.g., event loop, more tasks, etc.)
-            break;  // For this example, we just break immediately
-        }
-    } catch (const std::exception& e) {
-        // Handle known exceptions and print the error message.
-        std::cerr << TAG << " An error occurred: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    } catch (...) {
-        // Handle any other unknown exceptions.
-        std::cerr << TAG << " An unknown error occurred." << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    // Cleanup phase: Print a message before exiting.
-    std::cout << TAG << " Cleaning up and exiting..." << std::endl;
-
-    return EXIT_SUCCESS;
+    std::cout << "Validated user: " << name.value() << ", age=" << age.value() << ", confidence=" << confidence.value()
+              << ", lucky=" << lucky_number.value_or(-1) << '\n';
 }
 
 // Private
+
+}  // namespace puffinly
+
+int main() {
+    try {
+        std::cout << "Initializing application: " << APP_NAME << " v" << APP_VERSION << " by " << PRODUCT_MAINTAINER
+                  << '\n';
+        puffinly::run_demo();
+    } catch (const std::exception& e) {
+        std::cerr << "[Main] Error: " << e.what() << '\n';
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
 
 // End of file
