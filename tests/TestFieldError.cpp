@@ -1,12 +1,10 @@
 /*
- * @file: TestPolicies.cpp
+ * @file: TestFieldError.cpp
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
 // ── Includes ─────────────────────────────────────────────
-#include <string>
-
 #include "libs/puffinly.hpp"
 
 // ── CppUTest Includes ────────────────────────────────────
@@ -16,7 +14,7 @@
 
 // ── Test Group ───────────────────────────────────────────
 // clang-format off
-TEST_GROUP(Policies) {
+TEST_GROUP(FieldError) {
     void setup() {
         // Code here will be called immediately before each test
     }
@@ -27,34 +25,20 @@ TEST_GROUP(Policies) {
 // clang-format on
 
 // ── Tests ────────────────────────────────────────────────
-TEST(Policies, RangePolicyAcceptsInsideBounds) {
-    const puffinly::range_policy<int> policy(0, 10);
-    CHECK_TRUE(policy(7));
+TEST(FieldError, ConstructsWithAllFields) {
+    const puffinly::field_error error{"age", "invalid range", "RANGE_ERROR"};
+
+    STRCMP_EQUAL("age", error.field_name.c_str());
+    STRCMP_EQUAL("invalid range", error.message.c_str());
+    STRCMP_EQUAL("RANGE_ERROR", error.error_code.c_str());
 }
 
-TEST(Policies, RangePolicyRejectsOutsideBounds) {
-    const puffinly::range_policy<int> policy(0, 10);
-    CHECK_FALSE(policy(11));
-}
+TEST(FieldError, SupportsEqualityComparison) {
+    const puffinly::field_error first{"name", "empty value", "EMPTY_ERROR"};
+    const puffinly::field_error second{"name", "empty value", "EMPTY_ERROR"};
 
-TEST(Policies, NonEmptyPolicyRejectsEmptyString) {
-    const puffinly::non_empty_policy policy;
-    CHECK_FALSE(policy(std::string()));
-}
-
-TEST(Policies, MaxLengthPolicyRejectsTooLongString) {
-    const puffinly::max_length_policy policy(3);
-    CHECK_FALSE(policy(std::string("abcd")));
-}
-
-TEST(Policies, RegexMatchPolicyMatchesPattern) {
-    const puffinly::regex_match_policy policy("^[a-z]+$");
-    CHECK_TRUE(policy("puffin"));
-}
-
-TEST(Policies, RegexMatchPolicyRejectsNonMatchingPattern) {
-    const puffinly::regex_match_policy policy("^[a-z]+$");
-    CHECK_FALSE(policy("Puffin123"));
+    CHECK_TRUE(first == second);
+    CHECK_FALSE(first != second);
 }
 
 // End of file

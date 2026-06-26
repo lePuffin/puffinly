@@ -28,13 +28,13 @@ TEST_GROUP(RangedInt) {
 
 // ── Tests ────────────────────────────────────────────────
 TEST(RangedInt, AcceptsInRangeValue) {
-    const puffinly::ranged_int<1, 5> value(3);
+    const puffinly::ranged_value<int, 1, 5> value(3);
     CHECK_EQUAL(3, value.value());
 }
 
 TEST(RangedInt, ThrowsWhenOutOfRange) {
-    typedef puffinly::ranged_int<1, 5> ranged_int_1_5;
-    CHECK_THROWS(std::out_of_range, ranged_int_1_5(6));
+    typedef puffinly::ranged_value<int, 1, 5> ranged_value_int_1_5;
+    CHECK_THROWS(std::out_of_range, ranged_value_int_1_5(6));
 }
 
 // End of file

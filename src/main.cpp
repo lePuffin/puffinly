@@ -19,10 +19,10 @@ namespace puffinly {
 // Public
 
 void run_demo() {
-    const ranged_int<0, 150>    age(29);
-    const non_empty_string      name("Puffin");
-    const bounded_float<0, 100> confidence(99.5);
-    const optional<int>         lucky_number(7);
+    const ranged_value<int, 0, 150>    age(29);
+    const non_empty_string             name("Puffin");
+    const ranged_value<double, 0, 100> confidence(99.5);
+    const optional<int>                lucky_number(7);
 
     std::cout << "Validated user: " << name.value() << ", age=" << age.value() << ", confidence=" << confidence.value()
               << ", lucky=" << lucky_number.value_or(-1) << '\n';

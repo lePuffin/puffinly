@@ -5,11 +5,11 @@
 
 Puffinly is a C++17 validation library focused on small, explicit, dependency-free core APIs for consumer code.
 
-Phase 1 is implemented as a header-only public surface through a single include, with CppUTest used only for test targets.
+Phases 1 and 2 are implemented as a header-only public surface through a single include, with CppUTest used only for test targets.
 
 ## Current Status
 
-Implemented in Phase 1:
+Implemented in Phases 1 and 2:
 
 - Namespace lock: puffinly
 - C++ standard lock: C++17
@@ -22,11 +22,15 @@ Implemented in Phase 1:
   - RegexMatch
   - CustomPolicy
 - Validated types:
-  - ranged_int<Min, Max>
+  - ranged_value<Type, Min, Max>
   - non_empty_string
-  - bounded_float<Min, Max>
   - optional<T>
 - CppUTest suite coverage for policies, types, custom policy, and integration validate flows
+- Structured model error primitive: field_error
+- Model result carrier: validation_result<T>
+- Member-based model API support: model.validate()
+- Phase 2 model helpers: validate_model(model) and is_valid_model(model)
+- Phase 2 behavior lock: fail-fast by default, flat models in scope
 
 ## Project Layout
 
@@ -79,9 +83,9 @@ Consumer code should include only the single public header:
 #include "libs/puffinly.hpp"
 
 int main() {
-    puffinly::ranged_int<0, 150> age(29);
+    puffinly::ranged_value<int, 0, 150> age(29);
     puffinly::non_empty_string name("Puffin");
-    puffinly::bounded_float<0, 100> confidence(98.5);
+    puffinly::ranged_value<double, 0, 100> confidence(98.5);
     puffinly::optional<int> lucky(7);
 
     const auto even = puffinly::make_custom_policy([](int v) { return v % 2 == 0; });
@@ -99,12 +103,6 @@ int main() {
 
 ## Roadmap
 
-Phase 2 - Model system:
-
-- Struct composition support
-- Model-level validation orchestration
-- Structured validation errors (v1)
-
 Phase 3 - Serialization layer:
 
 - JSON adapters for to/from model conversion
@@ -121,6 +119,11 @@ Phase 5 - Hardening:
 - Fuzzing validation inputs
 - Documentation expansion and examples
 - ABI/API stability review
+
+Phase 6 - Model depth expansion (deferred):
+
+- Nested model path reporting
+- Optional multi-error aggregation mode
 
 ## Contributing
 

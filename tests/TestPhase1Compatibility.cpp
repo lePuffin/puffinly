@@ -1,12 +1,10 @@
 /*
- * @file: TestBoundedFloat.cpp
+ * @file: TestPhase1Compatibility.cpp
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
 // ── Includes ─────────────────────────────────────────────
-#include <stdexcept>
-
 #include "libs/puffinly.hpp"
 
 // ── CppUTest Includes ────────────────────────────────────
@@ -16,7 +14,7 @@
 
 // ── Test Group ───────────────────────────────────────────
 // clang-format off
-TEST_GROUP(BoundedFloat) {
+TEST_GROUP(Phase1Compatibility) {
     void setup() {
         // Code here will be called immediately before each test
     }
@@ -27,14 +25,20 @@ TEST_GROUP(BoundedFloat) {
 // clang-format on
 
 // ── Tests ────────────────────────────────────────────────
-TEST(BoundedFloat, AcceptsBoundedValue) {
-    const puffinly::bounded_float<0, 10> value(3.5);
-    DOUBLES_EQUAL(3.5, value.value(), 0.00001);
+TEST(Phase1Compatibility, ValuePolicyValidationIsUnchanged) {
+    const puffinly::range_policy<int> range(0, 10);
+    const auto                        even = puffinly::make_custom_policy([](int value) { return value % 2 == 0; });
+
+    CHECK_TRUE(puffinly::validate(8, range, even));
+    CHECK_FALSE(puffinly::validate(11, range, even));
 }
 
-TEST(BoundedFloat, ThrowsWhenOutsideBounds) {
-    typedef puffinly::bounded_float<0, 10> bounded_float_0_10;
-    CHECK_THROWS(std::out_of_range, bounded_float_0_10(10.5));
+TEST(Phase1Compatibility, ExistingValidatedTypesRemainUsable) {
+    const puffinly::ranged_value<int, 0, 10> age(8);
+    const puffinly::non_empty_string         name("Puffin");
+
+    CHECK_EQUAL(8, age.value());
+    STRCMP_EQUAL("Puffin", name.value().c_str());
 }
 
 // End of file

@@ -1,11 +1,11 @@
 /*
- * @file: TestPolicies.cpp
+ * @file: TestBoundedFloat.cpp
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
 // ── Includes ─────────────────────────────────────────────
-#include <string>
+#include <stdexcept>
 
 #include "libs/puffinly.hpp"
 
@@ -16,7 +16,7 @@
 
 // ── Test Group ───────────────────────────────────────────
 // clang-format off
-TEST_GROUP(Policies) {
+TEST_GROUP(RangedFloat) {
     void setup() {
         // Code here will be called immediately before each test
     }
@@ -27,34 +27,14 @@ TEST_GROUP(Policies) {
 // clang-format on
 
 // ── Tests ────────────────────────────────────────────────
-TEST(Policies, RangePolicyAcceptsInsideBounds) {
-    const puffinly::range_policy<int> policy(0, 10);
-    CHECK_TRUE(policy(7));
+TEST(RangedFloat, AcceptsRangedValue) {
+    const puffinly::ranged_value<double, 0, 10> value(3.5);
+    DOUBLES_EQUAL(3.5, value.value(), 0.00001);
 }
 
-TEST(Policies, RangePolicyRejectsOutsideBounds) {
-    const puffinly::range_policy<int> policy(0, 10);
-    CHECK_FALSE(policy(11));
-}
-
-TEST(Policies, NonEmptyPolicyRejectsEmptyString) {
-    const puffinly::non_empty_policy policy;
-    CHECK_FALSE(policy(std::string()));
-}
-
-TEST(Policies, MaxLengthPolicyRejectsTooLongString) {
-    const puffinly::max_length_policy policy(3);
-    CHECK_FALSE(policy(std::string("abcd")));
-}
-
-TEST(Policies, RegexMatchPolicyMatchesPattern) {
-    const puffinly::regex_match_policy policy("^[a-z]+$");
-    CHECK_TRUE(policy("puffin"));
-}
-
-TEST(Policies, RegexMatchPolicyRejectsNonMatchingPattern) {
-    const puffinly::regex_match_policy policy("^[a-z]+$");
-    CHECK_FALSE(policy("Puffin123"));
+TEST(RangedFloat, ThrowsWhenOutsideRange) {
+    typedef puffinly::ranged_value<double, 0, 10> ranged_value_double_0_10;
+    CHECK_THROWS(std::out_of_range, ranged_value_double_0_10(10.5));
 }
 
 // End of file

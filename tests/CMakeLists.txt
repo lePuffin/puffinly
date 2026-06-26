@@ -16,15 +16,8 @@ find_library(CPPUTEST_EXT_LIBRARY
     REQUIRED
 )
 
-set(TEST_SOURCES
-    main.cpp
-    TestPolicies.cpp
-    TestRangedInt.cpp
-    TestNonEmptyString.cpp
-    TestBoundedFloat.cpp
-    TestOptional.cpp
-    TestCustomPolicy.cpp
-    TestIntegrationValidate.cpp
+file(GLOB TEST_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 # Create an executable for tests

@@ -1,12 +1,12 @@
 /*
- * @file: bounded_float.hpp
- * @brief: Floating-point wrapper validated against compile-time bounds.
+ * @file: ranged_value.hpp
+ * @brief: Generic value wrapper with compile-time integer bounds.
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
-#ifndef SRC_TYPES_BOUNDED_FLOAT_HPP_
-#define SRC_TYPES_BOUNDED_FLOAT_HPP_
+#ifndef SRC_TYPES_RANGED_VALUE_HPP_
+#define SRC_TYPES_RANGED_VALUE_HPP_
 
 // ── Includes ─────────────────────────────────────────────
 #include <stdexcept>
@@ -21,25 +21,25 @@ namespace puffinly {
 
 // ── Classes ──────────────────────────────────────────────
 
-template <int Min, int Max>
-class bounded_float {
+template <typename T, int Min, int Max>
+class ranged_value {
  private:
-    double value_;
+    T value_;
 
  public:
-    explicit bounded_float(double value) : value_(value) {
-        if (!validate(value_, range_policy<double>(static_cast<double>(Min), static_cast<double>(Max)))) {
-            throw std::out_of_range("bounded_float value is out of bounds");
+    explicit ranged_value(T value) : value_(value) {
+        if (!validate(value_, range_policy<T>(static_cast<T>(Min), static_cast<T>(Max)))) {
+            throw std::out_of_range("ranged_value is out of bounds");
         }
     }
 
-    ~bounded_float() = default;
+    ~ranged_value() = default;
 
-    double value() const { return value_; }
+    T value() const { return value_; }
 };
 
 }  // namespace puffinly
 
-#endif  // SRC_TYPES_BOUNDED_FLOAT_HPP_
+#endif  // SRC_TYPES_RANGED_VALUE_HPP_
 
 // End of file

@@ -1,27 +1,15 @@
 /*
- * @file: puffinly.hpp
- * @brief: Single-header public API for Puffinly Phase 1.
+ * @file: field_error.hpp
+ * @brief: Structured field-level validation error.
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
-#ifndef LIBS_PUFFINLY_HPP_
-#define LIBS_PUFFINLY_HPP_
+#ifndef SRC_ERRORS_FIELD_ERROR_HPP_
+#define SRC_ERRORS_FIELD_ERROR_HPP_
 
 // ── Includes ─────────────────────────────────────────────
-#include "../src/core/validate.hpp"
-#include "../src/errors/field_error.hpp"
-#include "../src/errors/validation_result.hpp"
-#include "../src/models/base_model.hpp"
-#include "../src/models/model_validation.hpp"
-#include "../src/policies/custom_policy.hpp"
-#include "../src/policies/max_length_policy.hpp"
-#include "../src/policies/non_empty_policy.hpp"
-#include "../src/policies/range_policy.hpp"
-#include "../src/policies/regex_match_policy.hpp"
-#include "../src/types/non_empty_string.hpp"
-#include "../src/types/optional.hpp"
-#include "../src/types/ranged_value.hpp"
+#include <string>
 
 // ── Namespace ────────────────────────────────────────────
 namespace puffinly {
@@ -30,8 +18,20 @@ namespace puffinly {
 
 // ── Classes ──────────────────────────────────────────────
 
+struct field_error {
+    std::string field_name;
+    std::string message;
+    std::string error_code;
+
+    bool operator==(const field_error& other) const {
+        return field_name == other.field_name && message == other.message && error_code == other.error_code;
+    }
+
+    bool operator!=(const field_error& other) const { return !(*this == other); }
+};
+
 }  // namespace puffinly
 
-#endif  // LIBS_PUFFINLY_HPP_
+#endif  // SRC_ERRORS_FIELD_ERROR_HPP_
 
 // End of file

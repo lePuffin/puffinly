@@ -1,11 +1,11 @@
 /*
- * @file: TestPolicies.cpp
+ * @file: TestValidationResult.cpp
  * @copyright: Copyright (c) 2026 TheCPuffin
  * @date: 2026-06-26
  */
 
 // ── Includes ─────────────────────────────────────────────
-#include <string>
+#include <stdexcept>
 
 #include "libs/puffinly.hpp"
 
@@ -16,7 +16,7 @@
 
 // ── Test Group ───────────────────────────────────────────
 // clang-format off
-TEST_GROUP(Policies) {
+TEST_GROUP(ValidationResult) {
     void setup() {
         // Code here will be called immediately before each test
     }
@@ -27,34 +27,32 @@ TEST_GROUP(Policies) {
 // clang-format on
 
 // ── Tests ────────────────────────────────────────────────
-TEST(Policies, RangePolicyAcceptsInsideBounds) {
-    const puffinly::range_policy<int> policy(0, 10);
-    CHECK_TRUE(policy(7));
+TEST(ValidationResult, OkResultCarriesValue) {
+    const auto result = puffinly::validation_result<int>::ok(42);
+
+    CHECK_TRUE(result.is_ok());
+    CHECK_FALSE(result.is_error());
+    CHECK_EQUAL(42, result.value());
 }
 
-TEST(Policies, RangePolicyRejectsOutsideBounds) {
-    const puffinly::range_policy<int> policy(0, 10);
-    CHECK_FALSE(policy(11));
+TEST(ValidationResult, ErrorResultCarriesFieldError) {
+    const auto result = puffinly::validation_result<int>::fail({"age", "out of range", "RANGE_ERROR"});
+
+    CHECK_FALSE(result.is_ok());
+    CHECK_TRUE(result.is_error());
+    STRCMP_EQUAL("age", result.error().field_name.c_str());
 }
 
-TEST(Policies, NonEmptyPolicyRejectsEmptyString) {
-    const puffinly::non_empty_policy policy;
-    CHECK_FALSE(policy(std::string()));
+TEST(ValidationResult, AccessingMissingValueThrows) {
+    const auto result = puffinly::validation_result<int>::fail({"field", "error", "GENERIC"});
+
+    CHECK_THROWS(std::logic_error, result.value());
 }
 
-TEST(Policies, MaxLengthPolicyRejectsTooLongString) {
-    const puffinly::max_length_policy policy(3);
-    CHECK_FALSE(policy(std::string("abcd")));
-}
+TEST(ValidationResult, AccessingMissingErrorThrows) {
+    const auto result = puffinly::validation_result<int>::ok(1);
 
-TEST(Policies, RegexMatchPolicyMatchesPattern) {
-    const puffinly::regex_match_policy policy("^[a-z]+$");
-    CHECK_TRUE(policy("puffin"));
-}
-
-TEST(Policies, RegexMatchPolicyRejectsNonMatchingPattern) {
-    const puffinly::regex_match_policy policy("^[a-z]+$");
-    CHECK_FALSE(policy("Puffin123"));
+    CHECK_THROWS(std::logic_error, result.error());
 }
 
 // End of file
